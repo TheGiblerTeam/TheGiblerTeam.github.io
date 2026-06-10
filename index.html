@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoldenFrame — Real Estate Photo Timing</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0D1B2A;
+    --navy-mid: #162436;
+    --navy-light: #1E3248;
+    --cream: #F7F4EF;
+    --cream-dim: #EEE9E0;
+    --gold: #E8A838;
+    --gold-soft: #F5C96A;
+    --gold-pale: #FDF3DC;
+    --sage: #6BAE8A;
+    --sage-pale: #E8F5EE;
+    --red-soft: #E87070;
+    --red-pale: #FDEAEA;
+    --amber: #E07A30;
+    --text-dark: #0D1B2A;
+    --text-mid: #3A4A5C;
+    --text-muted: #7A8FA6;
+    --white: #FFFFFF;
+    --card-bg: rgba(255,255,255,0.06);
+    --card-border: rgba(255,255,255,0.1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--navy);
+    color: var(--cream);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px 60px;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(232,168,56,0.12) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(107,174,138,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-skyline {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 160px;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 160'%3E%3Crect x='0' y='80' width='60' height='80' fill='white'/%3E%3Crect x='70' y='50' width='80' height='110' fill='white'/%3E%3Crect x='160' y='70' width='50' height='90' fill='white'/%3E%3Crect x='220' y='30' width='100' height='130' fill='white'/%3E%3Crect x='330' y='60' width='70' height='100' fill='white'/%3E%3Crect x='410' y='40' width='90' height='120' fill='white'/%3E%3Crect x='510' y='65' width='60' height='95' fill='white'/%3E%3Crect x='580' y='20' width='120' height='140' fill='white'/%3E%3Crect x='710' y='55' width='80' height='105' fill='white'/%3E%3Crect x='800' y='45' width='70' height='115' fill='white'/%3E%3Crect x='880' y='75' width='90' height='85' fill='white'/%3E%3Crect x='980' y='35' width='110' height='125' fill='white'/%3E%3Crect x='1100' y='60' width='60' height='100' fill='white'/%3E%3Crect x='1170' y='80' width='30' height='80' fill='white'/%3E%3C/svg%3E");
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 48px;
+    opacity: 0.9;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.15;
+    color: var(--cream);
+    max-width: 700px;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    text-align: center;
+    max-width: 480px;
+    line-height: 1.7;
+    margin-bottom: 52px;
+    letter-spacing: 0.01em;
+  }
+
+  /* ─── FORM CARD ─── */
+  .form-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 36px 40px;
+    width: 100%;
+    max-width: 580px;
+    backdrop-filter: blur(12px);
+    position: relative;
+    z-index: 10;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  input, select {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 13px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--cream);
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    width: 100%;
+  }
+
+  input::placeholder { color: var(--text-muted); }
+  input:focus, select:focus {
+    border-color: var(--gold);
+    background: rgba(232,168,56,0.06);
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.7) sepia(1) hue-rotate(10deg) saturate(1.2);
+    cursor: pointer;
+  }
+
+  select option { background: #162436; color: var(--cream); }
+
+  .facing-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    line-height: 1.5;
+  }
+
+  .btn-analyze {
+    margin-top: 8px;
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--amber) 100%);
+    color: var(--navy);
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+    text-transform: uppercase;
+  }
+
+  .btn-analyze:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(232,168,56,0.35); }
+  .btn-analyze:active { transform: translateY(0); }
+  .btn-analyze:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* ─── RESULTS SECTION ─── */
+  #results {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    display: none;
+  }
+
+  #results.visible { display: block; }
+
+  .results-header {
+    text-align: center;
+    margin-bottom: 48px;
+    padding-top: 64px;
+  }
+
+  .results-header .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .results-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+
+  .results-header .address-label {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  /* ─── SUN ARC DIAGRAM ─── */
+  .diagram-wrap {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+
+  .diagram-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  #sunArcCanvas {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+  }
+
+  /* ─── WINDOWS GRID ─── */
+  .windows-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .window-card {
+    border-radius: 16px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .window-card.great {
+    background: linear-gradient(135deg, rgba(107,174,138,0.15), rgba(107,174,138,0.05));
+    border: 1px solid rgba(107,174,138,0.3);
+  }
+  .window-card.good {
+    background: linear-gradient(135deg, rgba(232,168,56,0.12), rgba(232,168,56,0.04));
+    border: 1px solid rgba(232,168,56,0.25);
+  }
+  .window-card.avoid {
+    background: linear-gradient(135deg, rgba(232,112,112,0.1), rgba(232,112,112,0.03));
+    border: 1px solid rgba(232,112,112,0.2);
+  }
+
+  .window-card .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+  }
+
+  .window-card.great .badge { background: rgba(107,174,138,0.2); color: #8FD4AC; }
+  .window-card.good .badge { background: rgba(232,168,56,0.2); color: var(--gold-soft); }
+  .window-card.avoid .badge { background: rgba(232,112,112,0.15); color: #F0A0A0; }
+
+  .window-card .badge svg { width: 10px; height: 10px; }
+
+  .window-time {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+
+  .window-reason {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .window-card .sun-indicator {
+    position: absolute;
+    top: 20px; right: 20px;
+    font-size: 22px;
+    opacity: 0.4;
+  }
+
+  /* ─── TIMELINE ─── */
+  .timeline-section {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+  }
+
+  .timeline-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .timeline-bar-wrap {
+    position: relative;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    background: rgba(255,255,255,0.04);
+  }
+
+  .timeline-bar-wrap canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .timeline-axis {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  /* ─── TIPS ─── */
+  .tips-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+
+  .tip-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .tip-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+
+  .tip-card h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+
+  .tip-card p {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ─── LOADING ─── */
+  .loader {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 0 8px;
+  }
+  .loader.visible { display: flex; }
+
+  .loader-ring {
+    width: 32px; height: 32px;
+    border: 2px solid rgba(232,168,56,0.2);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader-text { font-size: 12px; color: var(--text-muted); }
+
+  .error-msg {
+    display: none;
+    font-size: 13px;
+    color: #F0A0A0;
+    background: rgba(232,112,112,0.08);
+    border: 1px solid rgba(232,112,112,0.2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 12px;
+    text-align: center;
+  }
+  .error-msg.visible { display: block; }
+
+  /* ─── SCROLL ARROW ─── */
+  .scroll-down {
+    position: absolute;
+    bottom: 30px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    opacity: 0; transition: opacity 0.5s; pointer-events: none;
+    font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .scroll-down.visible { opacity: 1; }
+  .scroll-arrow { animation: bounce 1.4s ease-in-out infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(5px)} }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 520px) {
+    .form-card { padding: 24px 20px; }
+    .form-row { grid-template-columns: 1fr; }
+    .diagram-wrap, .timeline-section { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-skyline"></div>
+
+  <div class="logo">GoldenFrame</div>
+
+  <h1>Shoot every home in its <em>best light</em></h1>
+  <p class="hero-sub">Enter a property address and shoot date — we'll calculate the sun's exact position relative to the front of the house and tell you the perfect windows for exterior photos.</p>
+
+  <div class="form-card">
+    <div class="form-row">
+      <div class="form-group full">
+        <label>Property Address</label>
+        <input type="text" id="addressInput" placeholder="123 Maple Street, Cincinnati, OH" autocomplete="off">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Shoot Date</label>
+        <input type="date" id="dateInput">
+      </div>
+      <div class="form-group">
+        <label>Front of House Faces</label>
+        <select id="facingInput">
+          <option value="">— I'm not sure —</option>
+          <option value="N">North</option>
+          <option value="NE">Northeast</option>
+          <option value="E">East</option>
+          <option value="SE">Southeast</option>
+          <option value="S">South</option>
+          <option value="SW">Southwest</option>
+          <option value="W">West</option>
+          <option value="NW">Northwest</option>
+        </select>
+        <div class="facing-hint">The direction your front door faces when you step outside</div>
+      </div>
+    </div>
+    <button class="btn-analyze" id="analyzeBtn" onclick="analyze()">Find My Photo Windows →</button>
+    <div class="loader" id="loader">
+      <div class="loader-ring"></div>
+      <div class="loader-text">Calculating sun position…</div>
+    </div>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <div class="scroll-down" id="scrollDown">
+    <span>See Results</span>
+    <span class="scroll-arrow">↓</span>
+  </div>
+</section>
+
+<section id="results">
+  <div class="results-header">
+    <div class="eyebrow">Photo Windows for</div>
+    <h2 id="resultsDate"></h2>
+    <div class="address-label" id="resultsAddress"></div>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-title">Sun Arc · House Position</div>
+    <canvas id="sunArcCanvas" width="820" height="340"></canvas>
+  </div>
+
+  <div class="windows-grid" id="windowsGrid"></div>
+
+  <div class="timeline-section">
+    <div class="timeline-label">Quality Timeline — Sunrise to Sunset</div>
+    <div class="timeline-bar-wrap">
+      <canvas id="timelineCanvas" width="820" height="48"></canvas>
+    </div>
+    <div class="timeline-axis" id="timelineAxis"></div>
+  </div>
+
+  <div class="tips-section" id="tipsSection"></div>
+</section>
+
+<script>
+// ──────────────────────────────────────────
+// SUN POSITION MATH (Meeus algorithm)
+// ──────────────────────────────────────────
+function toRad(d) { return d * Math.PI / 180; }
+function toDeg(r) { return r * 180 / Math.PI; }
+
+function sunPosition(date, lat, lng) {
+  // Julian day
+  const JD = date.getTime() / 86400000 + 2440587.5;
+  const n = JD - 2451545.0;
+  const L = (280.46 + 0.9856474 * n) % 360;
+  const g = toRad((357.528 + 0.9856003 * n) % 360);
+  const lambda = toRad(L + 1.915 * Math.sin(g) + 0.02 * Math.sin(2 * g));
+  const epsilon = toRad(23.439 - 0.0000004 * n);
+  const sinDec = Math.sin(epsilon) * Math.sin(lambda);
+  const dec = Math.asin(sinDec);
+  // Equation of time (minutes)
+  const RA = Math.atan2(Math.cos(epsilon) * Math.sin(lambda), Math.cos(lambda));
+  const GMST = (18.697374558 + 24.06570982441908 * n) % 24;
+  const LST = GMST + lng / 15;
+  const HA = toRad((LST - toDeg(RA) / 15) * 15);
+  const latR = toRad(lat);
+  const sinAlt = Math.sin(latR) * sinDec + Math.cos(latR) * Math.cos(dec) * Math.cos(HA);
+  const altitude = Math.asin(sinAlt);
+  const cosAz = (sinDec - Math.sin(altitude) * Math.sin(latR)) / (Math.cos(altitude) * Math.cos(latR));
+  const clampedCosAz = Math.max(-1, Math.min(1, cosAz));
+  let azimuth = toDeg(Math.acos(clampedCosAz));
+  if (Math.sin(HA) > 0) azimuth = 360 - azimuth;
+  return { altitude: toDeg(altitude), azimuth };
+}
+
+function findSunriseSunset(date, lat, lng) {
+  let sunrise = null, sunset = null;
+  const d = new Date(date);
+  for (let h = 0; h < 24; h += 0.1) {
+    d.setTime(date.getTime());
+    const d1 = new Date(date.getTime() + (h - 0.05) * 3600000);
+    const d2 = new Date(date.getTime() + (h + 0.05) * 3600000);
+    const a1 = sunPosition(d1, lat, lng).altitude;
+    const a2 = sunPosition(d2, lat, lng).altitude;
+    if (a1 < 0 && a2 >= 0 && sunrise === null) sunrise = h;
+    if (a1 >= 0 && a2 < 0 && sunset === null) sunset = h;
+  }
+  return { sunrise: sunrise || 6, sunset: sunset || 20 };
+}
+
+// ──────────────────────────────────────────
+// COMPASS DIRECTION → DEGREES
+// ──────────────────────────────────────────
+const facingDegrees = { N:0, NE:45, E:90, SE:135, S:180, SW:225, W:270, NW:315 };
+const facingLabels = { N:'North',NE:'Northeast',E:'East',SE:'Southeast',S:'South',SW:'Southwest',W:'West',NW:'Northwest' };
+
+// ──────────────────────────────────────────
+// QUALITY SCORING
+// ──────────────────────────────────────────
+function scoreHour(sunAlt, sunAz, facingDeg) {
+  if (sunAlt < 0) return { score: -1, label: 'Night', color: '#0a1520' };
+
+  // Angular difference between sun azimuth and house facing
+  let diff = ((sunAz - facingDeg) + 360) % 360;
+  if (diff > 180) diff = 360 - diff; // 0=sun behind front, 180=sun behind house
+
+  // Sun "behind" the front facade (within ±60°)
+  const behindFront = diff < 60;
+  // Sun very high overhead (harsh shadows)
+  const harshOverhead = sunAlt > 65;
+  // Ideal altitude range
+  const idealAlt = sunAlt >= 15 && sunAlt <= 50;
+  // Golden hour altitude
+  const goldenAlt = sunAlt > 0 && sunAlt <= 20;
+
+  if (behindFront) return { score: 0, label: 'Avoid — sun behind facade', color: '#7a2020' };
+  if (harshOverhead && !goldenAlt) return { score: 1, label: 'Harsh overhead light', color: '#7a5520' };
+  if (goldenAlt && !behindFront) return { score: 4, label: 'Golden Hour', color: '#7a5500' };
+  if (idealAlt && !behindFront) return { score: 3, label: 'Great light', color: '#1a5a38' };
+  return { score: 2, label: 'Acceptable light', color: '#1a3a5a' };
+}
+
+// ──────────────────────────────────────────
+// FORMAT TIME
+// ──────────────────────────────────────────
+function fmtHour(h) {
+  const totalMin = Math.round(h * 60);
+  const hrs = Math.floor(totalMin / 60) % 24;
+  const mins = totalMin % 60;
+  const period = hrs < 12 ? 'AM' : 'PM';
+  const h12 = hrs === 0 ? 12 : hrs > 12 ? hrs - 12 : hrs;
+  return `${h12}:${String(mins).padStart(2,'0')} ${period}`;
+}
+
+function fmtDate(dateStr) {
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const names = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const dt = new Date(y, m-1, d);
+  return `${days[dt.getDay()]}, ${names[m-1]} ${d}, ${y}`;
+}
+
+// ──────────────────────────────────────────
+// GEOCODE (Nominatim)
+// ──────────────────────────────────────────
+async function geocode(address) {
+  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(address)}`;
+  const res = await fetch(url, { headers: { 'Accept-Language': 'en', 'User-Agent': 'GoldenFrameApp/1.0' } });
+  const data = await res.json();
+  if (!data || data.length === 0) throw new Error('Address not found. Try including the city and state.');
+  return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon), display: data[0].display_name };
+}
+
+// ──────────────────────────────────────────
+// MAIN ANALYZE
+// ──────────────────────────────────────────
+async function analyze() {
+  const address = document.getElementById('addressInput').value.trim();
+  const dateStr = document.getElementById('dateInput').value;
+  const facingKey = document.getElementById('facingInput').value;
+
+  const errEl = document.getElementById('errorMsg');
+  errEl.className = 'error-msg';
+
+  if (!address) { showError('Please enter a property address.'); return; }
+  if (!dateStr) { showError('Please select a shoot date.'); return; }
+
+  const btn = document.getElementById('analyzeBtn');
+  const loader = document.getElementById('loader');
+  btn.disabled = true;
+  loader.className = 'loader visible';
+
+  try {
+    const { lat, lng, display } = await geocode(address);
+    const [year, month, day] = dateStr.split('-').map(Number);
+    // Estimate timezone offset from longitude
+    const tzOffset = Math.round(lng / 15);
+    // Base date at midnight UTC adjusted for timezone
+    const baseDateUTC = new Date(Date.UTC(year, month - 1, day, 0, 0, 0) - tzOffset * 3600000);
+
+    const facingDeg = facingKey ? facingDegrees[facingKey] : null;
+
+    // Sample every 15 minutes
+    const samples = [];
+    for (let h = 0; h < 24; h += 0.25) {
+      const sampleDate = new Date(baseDateUTC.getTime() + h * 3600000);
+      const pos = sunPosition(sampleDate, lat, lng);
+      const q = facingDeg !== null ? scoreHour(pos.altitude, pos.azimuth, facingDeg) : scoreFacingUnknown(pos.altitude);
+      samples.push({ h, ...pos, ...q });
+    }
+
+    const { sunrise, sunset } = findSunriseSunset(baseDateUTC, lat, lng);
+
+    loader.className = 'loader';
+    btn.disabled = false;
+
+    renderResults({ samples, lat, lng, display, address, dateStr, facingKey, facingDeg, sunrise, sunset });
+
+    document.getElementById('scrollDown').className = 'scroll-down visible';
+    setTimeout(() => {
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+
+  } catch (e) {
+    loader.className = 'loader';
+    btn.disabled = false;
+    showError(e.message || 'Something went wrong. Please try again.');
+  }
+}
+
+function scoreFacingUnknown(alt) {
+  if (alt < 0) return { score: -1, label: 'Night', color: '#0a1520' };
+  if (alt <= 20) return { score: 4, label: 'Golden Hour', color: '#7a5500' };
+  if (alt <= 50) return { score: 3, label: 'Good light', color: '#1a5a38' };
+  return { score: 1, label: 'Harsh overhead', color: '#7a5520' };
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.className = 'error-msg visible';
+}
+
+// ──────────────────────────────────────────
+// RENDER
+// ──────────────────────────────────────────
+function renderResults({ samples, display, address, dateStr, facingKey, facingDeg, sunrise, sunset }) {
+  document.getElementById('resultsDate').textContent = fmtDate(dateStr);
+  document.getElementById('resultsAddress').textContent = address;
+  document.getElementById('results').className = 'visible';
+
+  drawSunArc(samples, facingDeg, sunrise, sunset);
+  drawTimeline(samples, sunrise, sunset);
+  renderWindows(samples, facingKey, sunrise, sunset);
+  renderTips(facingKey, sunrise, sunset);
+}
+
+// ──────────────────────────────────────────
+// SUN ARC DIAGRAM
+// ──────────────────────────────────────────
+function drawSunArc(samples, facingDeg, sunrise, sunset) {
+  const canvas = document.getElementById('sunArcCanvas');
+  const W = 820, H = 340;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Sky gradient
+  const sky = ctx.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, '#0D1B2A');
+  sky.addColorStop(0.6, '#162436');
+  sky.addColorStop(1, '#1E3248');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, H);
+
+  const groundY = H - 60;
+
+  // Ground
+  const grd = ctx.createLinearGradient(0, groundY, 0, H);
+  grd.addColorStop(0, '#162436');
+  grd.addColorStop(1, '#0D1B2A');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, groundY, W, H - groundY);
+
+  // Horizon line
+  ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, groundY);
+  ctx.lineTo(W, groundY);
+  ctx.stroke();
+
+  // Draw house silhouette
+  const hx = W / 2, hy = groundY;
+  const hw = 80, hh = 55;
+  ctx.fillStyle = 'rgba(255,255,255,0.08)';
+  ctx.fillRect(hx - hw/2, hy - hh, hw, hh);
+  // Roof
+  ctx.beginPath();
+  ctx.moveTo(hx - hw/2 - 8, hy - hh);
+  ctx.lineTo(hx, hy - hh - 36);
+  ctx.lineTo(hx + hw/2 + 8, hy - hh);
+  ctx.closePath();
+  ctx.fill();
+  // Door
+  ctx.fillStyle = 'rgba(255,255,255,0.04)';
+  ctx.fillRect(hx - 10, hy - 28, 20, 28);
+  // Windows
+  ctx.fillStyle = 'rgba(232,168,56,0.12)';
+  ctx.fillRect(hx - 35, hy - hh + 12, 18, 16);
+  ctx.fillRect(hx + 17, hy - hh + 12, 18, 16);
+
+  // Facing arrow (if set)
+  if (facingDeg !== null) {
+    const arrowLen = 50;
+    const arrowRad = toRad(facingDeg - 90);
+    const ax = hx + Math.cos(arrowRad) * arrowLen;
+    const ay = hy - hh/2 + Math.sin(arrowRad) * arrowLen * 0.3;
+    ctx.strokeStyle = 'rgba(232,168,56,0.5)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4,3]);
+    ctx.beginPath();
+    ctx.moveTo(hx, hy - hh/2);
+    ctx.lineTo(ax, ay);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = '10px Inter';
+    ctx.fillStyle = 'rgba(232,168,56,0.6)';
+    ctx.textAlign = 'center';
+    ctx.fillText('Front', ax + Math.cos(arrowRad)*14, ay + Math.sin(arrowRad)*14 + 3);
+  }
+
+  // Project sun arc (azimuth→x, altitude→y)
+  // Map azimuth to X: 0°(N)→W/2, 90°(E)→W*0.8, 180°(S)→W/2+50, 270°(W)→W*0.2
+  // Simple: map 0-360 linearly across width, offset so S=center
+  function sunX(az) {
+    let rel = ((az - 180) + 360) % 360;
+    if (rel > 180) rel -= 360;
+    return W/2 + (rel / 180) * (W * 0.46);
+  }
+  function sunY(alt) {
+    return groundY - (alt / 90) * (groundY - 40);
+  }
+
+  // Color arc by quality score
+  const daysamples = samples.filter(s => s.altitude >= -6);
+  for (let i = 1; i < daysamples.length; i++) {
+    const s = daysamples[i];
+    const prev = daysamples[i-1];
+    if (s.altitude < 0 && prev.altitude < 0) continue;
+    const x1 = sunX(prev.azimuth), y1 = sunY(Math.max(0, prev.altitude));
+    const x2 = sunX(s.azimuth), y2 = sunY(Math.max(0, s.altitude));
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.lineWidth = 3;
+    const col = scoreToArcColor(s.score);
+    ctx.strokeStyle = col;
+    ctx.stroke();
+  }
+
+  // Draw current visible sun position (noon or best window)
+  const noonSample = samples.find(s => Math.abs(s.h - (sunrise + sunset)/2) < 0.3);
+  if (noonSample && noonSample.altitude > 0) {
+    const sx = sunX(noonSample.azimuth), sy = sunY(noonSample.altitude);
+    const sunGrd = ctx.createRadialGradient(sx, sy, 2, sx, sy, 18);
+    sunGrd.addColorStop(0, '#FFD060');
+    sunGrd.addColorStop(0.5, 'rgba(232,168,56,0.5)');
+    sunGrd.addColorStop(1, 'rgba(232,168,56,0)');
+    ctx.fillStyle = sunGrd;
+    ctx.beginPath();
+    ctx.arc(sx, sy, 18, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#FFD060';
+    ctx.beginPath();
+    ctx.arc(sx, sy, 5, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // Legend
+  const legendItems = [
+    { color: '#4CAF8A', label: 'Great light' },
+    { color: '#E8A838', label: 'Golden hour' },
+    { color: '#E88830', label: 'Acceptable' },
+    { color: '#C04040', label: 'Avoid' },
+  ];
+  let lx = 20;
+  legendItems.forEach(item => {
+    ctx.fillStyle = item.color;
+    ctx.beginPath();
+    ctx.arc(lx + 6, H - 18, 5, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.font = '11px Inter';
+    ctx.textAlign = 'left';
+    ctx.fillText(item.label, lx + 16, H - 14);
+    lx += ctx.measureText(item.label).width + 36;
+  });
+
+  // Compass labels
+  const compLabels = [['E', W*0.8], ['S', W/2 + 5], ['W', W*0.2], ['N', W/2 - W*0.45]];
+  compLabels.forEach(([label, x]) => {
+    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+    ctx.font = '11px Inter';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, x, groundY + 20);
+  });
+}
+
+function scoreToArcColor(score) {
+  switch(score) {
+    case 4: return 'rgba(255,200,80,0.9)'; // golden
+    case 3: return 'rgba(76,175,138,0.85)'; // great
+    case 2: return 'rgba(200,140,60,0.7)'; // acceptable
+    case 1: return 'rgba(180,80,80,0.5)'; // harsh
+    case 0: return 'rgba(150,40,40,0.6)'; // avoid
+    default: return 'rgba(255,255,255,0.05)';
+  }
+}
+
+// ──────────────────────────────────────────
+// TIMELINE BAR
+// ──────────────────────────────────────────
+function drawTimeline(samples, sunrise, sunset) {
+  const canvas = document.getElementById('timelineCanvas');
+  canvas.width = 820; canvas.height = 48;
+  const ctx = canvas.getContext('2d');
+  const W = 820, H = 48;
+
+  ctx.clearRect(0, 0, W, H);
+
+  const daySamples = samples.filter(s => s.h >= sunrise - 0.5 && s.h <= sunset + 0.5);
+  const totalHrs = (sunset + 0.5) - (sunrise - 0.5);
+
+  daySamples.forEach((s, i) => {
+    if (i === 0) return;
+    const prev = daySamples[i-1];
+    const x1 = ((prev.h - (sunrise - 0.5)) / totalHrs) * W;
+    const x2 = ((s.h - (sunrise - 0.5)) / totalHrs) * W;
+    ctx.fillStyle = timelineColor(s.score);
+    ctx.fillRect(x1, 0, x2 - x1 + 1, H);
+  });
+
+  // Axis labels
+  const axis = document.getElementById('timelineAxis');
+  const labels = [];
+  for (let h = Math.ceil(sunrise); h <= Math.floor(sunset); h += 2) {
+    const pct = ((h - (sunrise - 0.5)) / totalHrs * 100).toFixed(1);
+    labels.push(`<span style="position:absolute;left:${pct}%;transform:translateX(-50%)">${fmtHour(h)}</span>`);
+  }
+  axis.style.position = 'relative';
+  axis.style.height = '20px';
+  axis.innerHTML = labels.join('');
+}
+
+function timelineColor(score) {
+  switch(score) {
+    case 4: return '#C8920A';
+    case 3: return '#2E7D52';
+    case 2: return '#7A5000';
+    case 1: return '#5A3020';
+    case 0: return '#6A1515';
+    default: return '#0a1520';
+  }
+}
+
+// ──────────────────────────────────────────
+// WINDOWS CARDS
+// ──────────────────────────────────────────
+function renderWindows(samples, facingKey, sunrise, sunset) {
+  // Find contiguous windows of good/great/golden light
+  const windows = [];
+  let current = null;
+
+  samples.forEach(s => {
+    if (s.h < sunrise - 0.15 || s.h > sunset + 0.15) return;
+    if (s.score >= 3) {
+      if (!current) current = { start: s.h, end: s.h, score: s.score, label: s.label };
+      else { current.end = s.h; if (s.score > current.score) { current.score = s.score; current.label = s.label; } }
+    } else {
+      if (current && current.end - current.start >= 0.4) windows.push({ ...current });
+      current = null;
+    }
+  });
+  if (current && current.end - current.start >= 0.4) windows.push({ ...current });
+
+  // Also find "avoid" windows
+  const avoidWindows = [];
+  let avCurrent = null;
+  samples.forEach(s => {
+    if (s.h < sunrise - 0.15 || s.h > sunset + 0.15) return;
+    if (s.score === 0 || s.score === 1) {
+      if (!avCurrent) avCurrent = { start: s.h, end: s.h, score: s.score, label: s.label };
+      else { avCurrent.end = s.h; }
+    } else {
+      if (avCurrent && avCurrent.end - avCurrent.start >= 0.5) avoidWindows.push({ ...avCurrent });
+      avCurrent = null;
+    }
+  });
+  if (avCurrent && avCurrent.end - avCurrent.start >= 0.5) avoidWindows.push({ ...avCurrent });
+
+  const grid = document.getElementById('windowsGrid');
+  grid.innerHTML = '';
+
+  if (windows.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--text-muted);font-size:14px;">
+      No ideal windows found for this date. Consider shooting near sunrise or sunset for soft light regardless of facing.
+    </div>`;
+  }
+
+  windows.sort((a,b) => b.score - a.score).slice(0,3).forEach(w => {
+    const isGolden = w.score === 4;
+    const card = document.createElement('div');
+    card.className = `window-card ${isGolden ? 'good' : 'great'}`;
+    card.innerHTML = `
+      <div class="badge">
+        ${isGolden ? '✦ Golden Hour' : '✓ Recommended'}
+      </div>
+      <div class="window-time">${fmtHour(w.start)} – ${fmtHour(w.end)}</div>
+      <div class="window-reason">${w.label}. Soft, directional light ideal for exteriors.</div>
+      <div class="sun-indicator">☀️</div>
+    `;
+    grid.appendChild(card);
+  });
+
+  avoidWindows.slice(0, 2).forEach(w => {
+    const card = document.createElement('div');
+    card.className = 'window-card avoid';
+    card.innerHTML = `
+      <div class="badge">✗ Avoid</div>
+      <div class="window-time">${fmtHour(w.start)} – ${fmtHour(w.end)}</div>
+      <div class="window-reason">${w.label}. Expect blown-out highlights or dark facades.</div>
+      <div class="sun-indicator">🚫</div>
+    `;
+    grid.appendChild(card);
+  });
+
+  if (windows.length === 0 && avoidWindows.length === 0) {
+    const card = document.createElement('div');
+    card.className = 'window-card good';
+    card.innerHTML = `
+      <div class="badge">☀ General Tip</div>
+      <div class="window-time">${fmtHour(sunrise)} – ${fmtHour(sunrise + 2)}</div>
+      <div class="window-reason">Near sunrise offers the softest light of the day for exteriors.</div>
+      <div class="sun-indicator">🌅</div>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+// ──────────────────────────────────────────
+// TIPS
+// ──────────────────────────────────────────
+function renderTips(facingKey, sunrise, sunset) {
+  const tips = [
+    { icon: '🌅', title: 'Overcast = Bonus', text: 'Thin cloud cover acts like a giant softbox — great results all day regardless of sun angle.' },
+    { icon: '🏠', title: 'Interior lights on', text: 'Turn on all interior lights before exterior shots. The warm glow through windows adds life to the image.' },
+    { icon: '📐', title: '45° offset rule', text: 'Position yourself at 45° to the facade, not straight on, for depth and dimension in every shot.' },
+    { icon: '🌿', title: 'Arrive 15 min early', text: 'Scout the property before your window opens. Move cars, trash cans, and garden hoses.' },
+  ];
+
+  if (!facingKey) tips.unshift({ icon: '🧭', title: 'Add your facing direction', text: 'Re-run with the front-facing direction for a more precise sun-behind-facade analysis.' });
+
+  const section = document.getElementById('tipsSection');
+  section.innerHTML = tips.slice(0, 4).map(t => `
+    <div class="tip-card">
+      <div class="tip-icon">${t.icon}</div>
+      <div>
+        <h4>${t.title}</h4>
+        <p>${t.text}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ──────────────────────────────────────────
+// INIT
+// ──────────────────────────────────────────
+(function init() {
+  // Set default date to tomorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const y = tomorrow.getFullYear();
+  const m = String(tomorrow.getMonth()+1).padStart(2,'0');
+  const d = String(tomorrow.getDate()).padStart(2,'0');
+  document.getElementById('dateInput').value = `${y}-${m}-${d}`;
+
+  // Enter key triggers analysis
+  document.getElementById('addressInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') analyze();
+  });
+})();
+</script>
+</body>
+</html>
